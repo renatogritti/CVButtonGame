@@ -1,3 +1,14 @@
+"""
+--------------------------------------------------------------------------------
+Jogo: CV Button Game
+Arquivo: cv_handler.py
+Autor: Renato Gritti
+Data: 2026-03-12
+Descrição: Gerenciamento da câmera e detecção de gestos.
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+"""
+
 import cv2
 import mediapipe as mp
 from mediapipe.tasks import python

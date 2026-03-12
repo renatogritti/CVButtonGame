@@ -1,3 +1,14 @@
+"""
+--------------------------------------------------------------------------------
+Jogo: CV Button Game
+Arquivo: audio.py
+Autor: Renato Gritti
+Data: 2026-03-12
+Descrição: Gerenciamento de sons.
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+"""
+
 import pygame
 import os
 from config import *
@@ -43,7 +54,7 @@ class SoundManager:
         try:
             if os.path.exists(path):
                 pygame.mixer.music.load(path)
-                pygame.mixer.music.set_volume(0.3) # Low volume as requested
+                pygame.mixer.music.set_volume(0.3) # Increased volume
                 pygame.mixer.music.play(-1) # Loop forever
         except Exception as e:
             print(f"Error playing BGM {path}: {e}")

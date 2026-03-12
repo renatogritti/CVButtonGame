@@ -1,3 +1,14 @@
+"""
+--------------------------------------------------------------------------------
+Jogo: CV Button Game
+Arquivo: renderer.py
+Autor: Renato Gritti
+Data: 2026-03-12
+Descrição: Renderização do jogo.
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+"""
+
 import pygame
 import cv2
 import math
@@ -170,6 +181,45 @@ class Renderer:
         
         self.screen.blit(shadow, (center_x + 5, center_y + 5))
         self.screen.blit(surf, (center_x, center_y))
+
+    def draw_winner_screen(self, winner):
+        font = pygame.font.SysFont('Arial', 120, bold=True)
+        surf_name = font.render(winner, True, WHITE)
+        surf_venceu = font.render("VENCEU!", True, WHITE)
+        
+        shadow_name = font.render(winner, True, BLACK)
+        shadow_venceu = font.render("VENCEU!", True, BLACK)
+        
+        line_spacing = 10
+        total_height = surf_name.get_height() + surf_venceu.get_height() + line_spacing
+        start_y = HEIGHT // 2 - total_height // 2
+        
+        # Line 1: Team Name
+        pos_x1 = WIDTH // 2 - surf_name.get_width() // 2
+        self.screen.blit(shadow_name, (pos_x1 + 5, start_y + 5))
+        self.screen.blit(surf_name, (pos_x1, start_y))
+        
+        # Line 2: VENCEU!
+        pos_x2 = WIDTH // 2 - surf_venceu.get_width() // 2
+        pos_y2 = start_y + surf_name.get_height() + line_spacing
+        self.screen.blit(shadow_venceu, (pos_x2 + 5, pos_y2 + 5))
+        self.screen.blit(surf_venceu, (pos_x2, pos_y2))
+
+    def draw_turn_indicator(self, current_turn):
+        turn_color = BLUE if current_turn == 'A' else RED
+        font_turn = pygame.font.SysFont('Arial', 24, bold=True)
+        display_name = TEAM_A_NAME if current_turn == 'A' else TEAM_B_NAME
+        turn_text = font_turn.render(f"TURNO: {display_name}", True, turn_color)
+        self.screen.blit(turn_text, (WIDTH//2 - turn_text.get_width()//2, HEIGHT - 45))
+
+    def draw_ui_cursor(self, finger_pos, is_pinching, can_play, is_aiming):
+        cursor_color = RED if is_pinching else (255, 255, 0)
+        if not can_play and not is_aiming:
+            cursor_color = (100, 100, 100)
+            
+        pygame.draw.circle(self.screen, cursor_color, finger_pos, 8, 2)
+        if is_pinching and (can_play or is_aiming):
+             pygame.draw.circle(self.screen, cursor_color, finger_pos, 4)
 
     def draw_splash(self):
         import os
