@@ -32,6 +32,13 @@ def main():
     clock = pygame.time.Clock()
     
     renderer = Renderer(screen)
+    
+    # --- Splash Screen ---
+    renderer.draw_splash()
+    pygame.time.delay(SPLASH_DURATION * 1000)
+    # Clear events that happened during splash
+    pygame.event.clear()
+    
     cv_handler = CVHandler()
     fireworks = FireworkSystem()
     sound_manager = SoundManager()
@@ -50,6 +57,7 @@ def main():
     goal_timer = 0
     waiting_for_stop = False
     winner = None
+    conceding_team = 'A' # Team that will start playing
 
     while True:
         frame = cv_handler.get_frame()
@@ -120,11 +128,13 @@ def main():
             if ball.pos.x < FIELD_LEFT and goal_y_start < ball.pos.y < goal_y_end:
                 scores[1] += 1
                 scored = True
+                conceding_team = 'A'
                 fireworks.explode(FIELD_LEFT, ball.pos.y)
                 if scores[1] >= MAX_GOALS: winner = TEAM_B_NAME
             elif ball.pos.x > FIELD_RIGHT and goal_y_start < ball.pos.y < goal_y_end:
                 scores[0] += 1
                 scored = True
+                conceding_team = 'B'
                 fireworks.explode(FIELD_RIGHT, ball.pos.y)
                 if scores[0] >= MAX_GOALS: winner = TEAM_A_NAME
             
@@ -139,7 +149,7 @@ def main():
             if goal_timer == 0:
                 if not winner:
                     reset_match(team_a, team_b, ball)
-                    current_turn = 'A' if scores[0] == scores[1] else ('B' if scored else 'A') # simplified
+                    current_turn = conceding_team
 
         # 4. Rendering
         renderer.draw_field()
@@ -152,10 +162,30 @@ def main():
         if goal_timer > 0:
             renderer.draw_goal_celebration(goal_timer)
         
-        if winner:
-            font = pygame.font.SysFont('Arial', 60, bold=True)
-            text = font.render(f"{winner} VENCEU!", True, WHITE)
-            screen.blit(text, (WIDTH//2 - text.get_width()//2, HEIGHT//2))
+        if winner and goal_timer == 0:
+            font = pygame.font.SysFont('Arial', 120, bold=True)
+            surf_name = font.render(winner, True, WHITE)
+            surf_venceu = font.render("VENCEU!", True, WHITE)
+            
+            shadow_name = font.render(winner, True, (0, 0, 0))
+            shadow_venceu = font.render("VENCEU!", True, (0, 0, 0))
+            
+            # Layout
+            line_spacing = 10
+            total_height = surf_name.get_height() + surf_venceu.get_height() + line_spacing
+            
+            start_y = HEIGHT // 2 - total_height // 2
+            
+            # Line 1: Team Name
+            pos_x1 = WIDTH // 2 - surf_name.get_width() // 2
+            screen.blit(shadow_name, (pos_x1 + 5, start_y + 5))
+            screen.blit(surf_name, (pos_x1, start_y))
+            
+            # Line 2: VENCEU!
+            pos_x2 = WIDTH // 2 - surf_venceu.get_width() // 2
+            pos_y2 = start_y + surf_name.get_height() + line_spacing
+            screen.blit(shadow_venceu, (pos_x2 + 5, pos_y2 + 5))
+            screen.blit(surf_venceu, (pos_x2, pos_y2))
 
         # Turn Indicator
         turn_color = BLUE if current_turn == 'A' else RED

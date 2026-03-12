@@ -1,5 +1,6 @@
 import pygame
 import cv2
+import math
 from config import *
 
 class Renderer:
@@ -67,9 +68,53 @@ class Renderer:
             self.screen.blit(surf, (x, y))
 
     def draw_aim_line(self, start_pos, end_pos, force):
-        if force > 2:
-            pygame.draw.line(self.screen, (255, 255, 0), start_pos, end_pos, max(1, int(force//4)))
-            pygame.draw.circle(self.screen, (255, 50, 50), end_pos, 7)
+        if force > 1.5:
+            # 1. Color Calculation (Blue -> Yellow -> Red)
+            # Max force is around 25
+            ratio = min(force / MAX_FORCE, 1.0)
+            if ratio < 0.5:
+                # Interpolate Blue to Yellow
+                r = int(40 + (255 - 40) * (ratio * 2))
+                g = int(150 + (255 - 150) * (ratio * 2))
+                b = int(255 - 155 * (ratio * 2))
+            else:
+                # Interpolate Yellow to Red
+                r = 255
+                g = int(255 - 225 * ((ratio - 0.5) * 2))
+                b = int(100 - 100 * ((ratio - 0.5) * 2))
+            
+            color = (r, g, b)
+            
+            # 2. Draw Glow (Outer Line)
+            glow_color = (r, g, b, 80)
+            glow_surf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+            pygame.draw.line(glow_surf, glow_color, start_pos, end_pos, 8)
+            self.screen.blit(glow_surf, (0, 0))
+            
+            # 3. Draw Core Line
+            pygame.draw.line(self.screen, color, start_pos, end_pos, 3)
+            
+            # 4. Animated Dashes/Circles
+            start_vec = pygame.Vector2(start_pos)
+            end_vec = pygame.Vector2(end_pos)
+            dist = start_vec.distance_to(end_vec)
+            if dist > 10:
+                dir_vec = (end_vec - start_vec).normalize()
+                time_offset = (pygame.time.get_ticks() % 1000) / 1000.0 # 0.0 to 1.0
+                
+                step = 25
+                for d in range(int(step * time_offset), int(dist), step):
+                    p = start_vec + dir_vec * d
+                    # Shadow for dashes
+                    pygame.draw.circle(self.screen, (0, 0, 0, 100), (int(p.x)+1, int(p.y)+1), 4)
+                    # Dash core
+                    pygame.draw.circle(self.screen, WHITE, (int(p.x), int(p.y)), 3)
+                    pygame.draw.circle(self.screen, color, (int(p.x), int(p.y)), 4, 1)
+
+            # 5. End Target Effect
+            pulse = 2 + math.sin(pygame.time.get_ticks() * 0.01) * 2
+            pygame.draw.circle(self.screen, color, (int(end_pos[0]), int(end_pos[1])), 8 + pulse, 2)
+            pygame.draw.circle(self.screen, WHITE, (int(end_pos[0]), int(end_pos[1])), 4)
 
     def draw_score(self, scores, team_a_name, team_b_name):
         font = pygame.font.SysFont('Arial', 44, bold=True)
@@ -125,3 +170,31 @@ class Renderer:
         
         self.screen.blit(shadow, (center_x + 5, center_y + 5))
         self.screen.blit(surf, (center_x, center_y))
+
+    def draw_splash(self):
+        import os
+        image_path = os.path.join('assets', 'images', SPLASH_IMAGE)
+        try:
+            splash_img = pygame.image.load(image_path).convert()
+            splash_img = pygame.transform.smoothscale(splash_img, (WIDTH, HEIGHT))
+            self.screen.blit(splash_img, (0, 0))
+            
+            # Add Title
+            font = pygame.font.SysFont('Arial', 80, bold=True)
+            text = font.render("Button Game", True, WHITE)
+            shadow = font.render("Button Game", True, BLACK)
+            
+            pos_x = WIDTH // 2 - text.get_width() // 2
+            pos_y = HEIGHT // 2 - text.get_height() // 2
+            
+            self.screen.blit(shadow, (pos_x + 4, pos_y + 4))
+            self.screen.blit(text, (pos_x, pos_y))
+            
+            pygame.display.flip()
+        except Exception as e:
+            print(f"Error loading splash image: {e}")
+            self.screen.fill(BLACK)
+            font = pygame.font.SysFont('Arial', 40, bold=True)
+            text = font.render("CV BOTÃO", True, WHITE)
+            self.screen.blit(text, (WIDTH//2 - text.get_width()//2, HEIGHT//2 - text.get_height()//2))
+            pygame.display.flip()

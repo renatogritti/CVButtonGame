@@ -37,9 +37,11 @@ STATIONARY_THRESHOLD = 0.1 # User tuned
 # Celebration
 GOAL_MESSAGE_DURATION = 120 # Frames
 FIREWORK_PARTICLE_COUNT = 50
+SPLASH_IMAGE = 'Splash.jpg'
+SPLASH_DURATION = 3 # Seconds
 
 # Match Rules
-MAX_GOALS = 3
+MAX_GOALS = 1
 TEAM_A_IMAGE = 'Botao1.png'
 TEAM_B_IMAGE = 'Botao2.png'
 TEAM_A_NAME = 'Time A'
