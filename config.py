@@ -45,21 +45,21 @@ TEAM_B_IMAGE = 'Botao2.png'
 TEAM_A_NAME = 'Time A'
 TEAM_B_NAME = 'Time B'
 
-# Formations (1-2-2)
+# Formations (2-1-2 Strategic)
 FORMATION_A = [
-    (FIELD_LEFT + 30, HEIGHT // 2),              # Goalkeeper
-    (FIELD_LEFT + 150, HEIGHT // 2 - 100),       # Defense 1
-    (FIELD_LEFT + 150, HEIGHT // 2 + 100),       # Defense 2
-    (WIDTH // 2 - 80, HEIGHT // 2 - 140),        # Attack 1
-    (WIDTH // 2 - 80, HEIGHT // 2 + 140)         # Attack 2
+    (FIELD_LEFT + 35, HEIGHT // 2 - 0),          # Defender Top
+    (FIELD_LEFT + 210, HEIGHT // 2 - 40),          # Defender Bottom
+    (FIELD_LEFT + 210, HEIGHT // 2 + 40),              # Center Mid
+    (WIDTH // 2 - 60, HEIGHT // 2 - 180),       # Attacker Top
+    (WIDTH // 2 - 60, HEIGHT // 2 + 180)        # Attacker Bottom
 ]
 
 FORMATION_B = [
-    (FIELD_RIGHT - 30, HEIGHT // 2),             # Goalkeeper
-    (FIELD_RIGHT - 150, HEIGHT // 2 - 100),      # Defense 1
-    (FIELD_RIGHT - 150, HEIGHT // 2 + 100),      # Defense 2
-    (WIDTH // 2 + 80, HEIGHT // 2 - 140),        # Attack 1
-    (WIDTH // 2 + 80, HEIGHT // 2 + 140)         # Attack 2
+    (FIELD_RIGHT - 35, HEIGHT // 2 - 0),         # Defender Top
+    (FIELD_RIGHT - 210, HEIGHT // 2 + 40),         # Defender Bottom
+    (FIELD_RIGHT - 210, HEIGHT // 2 - 40),             # Center Mid
+    (WIDTH // 2 + 60, HEIGHT // 2 - 180),       # Attacker Top
+    (WIDTH // 2 + 60, HEIGHT // 2 + 180)        # Attacker Bottom
 ]
 
 # Entities
@@ -71,8 +71,9 @@ SHADOW_OFFSET = 5
 PINCH_THRESHOLD = 0.045
 PINCH_RELEASE_THRESHOLD = 0.075
 PINCH_STABILIZATION_FRAMES = 2
-SELECTION_RADIUS_MULT = 2.2
+SELECTION_RADIUS_MULT = 3.5 # Increased for easier selection at edges
 CV_SMOOTH_FACTOR = 0.35 
+CV_SAFE_ZONE = 0.15 # Margin (0-0.5) to reach full field bounds
 
 PIP_SIZE = (150, 112)
 PIP_MARGIN = 15

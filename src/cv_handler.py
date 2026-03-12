@@ -46,9 +46,18 @@ class CVHandler:
             index_tip = hand_landmarks[8]
             thumb_tip = hand_landmarks[4]
             
-            # 1. Coordinate Fetch
-            target_x = int(index_tip.x * WIDTH)
-            target_y = int(index_tip.y * HEIGHT)
+            # 1. Coordinate Fetch with Safe Zone Mapping
+            # Maps camera [margin, 1-margin] to field [0, 1]
+            raw_x = index_tip.x
+            raw_y = index_tip.y
+            
+            # Linear mapping: f(t) = (t - margin) / (1 - 2*margin)
+            map_x = (raw_x - CV_SAFE_ZONE) / (1 - 2 * CV_SAFE_ZONE)
+            map_y = (raw_y - CV_SAFE_ZONE) / (1 - 2 * CV_SAFE_ZONE)
+            
+            # Clamp to [0, 1] then scale to screen
+            target_x = int(np.clip(map_x, 0, 1) * WIDTH)
+            target_y = int(np.clip(map_y, 0, 1) * HEIGHT)
             
             # 2. Apply EMA Smoothing
             # New = (1-a) * Old + a * Target

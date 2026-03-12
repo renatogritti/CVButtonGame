@@ -162,7 +162,7 @@ def main():
         font_turn = pygame.font.SysFont('Arial', 24, bold=True)
         display_name = TEAM_A_NAME if current_turn == 'A' else TEAM_B_NAME
         turn_text = font_turn.render(f"TURNO: {display_name}", True, turn_color)
-        screen.blit(turn_text, (WIDTH//2 - turn_text.get_width()//2, 65))
+        screen.blit(turn_text, (WIDTH//2 - turn_text.get_width()//2, HEIGHT - 45))
 
         # Aiming Feedback
         if pinch_start and selected_player:
