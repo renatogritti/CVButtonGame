@@ -29,8 +29,6 @@ ENV/
 .vscode/
 .idea/
 
-# MediaPipe / ML Models
-assets/*.task
 
 # Game specific
 .DS_Store
