@@ -71,6 +71,13 @@ class GameManager:
         self.current_turn = self.conceding_team
         self.waiting_for_stop = False
 
+    def hard_reset(self, team_a, team_b, ball):
+        self.scores = [0, 0]
+        self.winner = None
+        self.goal_timer = 0
+        self.conceding_team = 'A'
+        self.reset_match(team_a, team_b, ball)
+
     def toggle_turn(self):
         self.current_turn = 'B' if self.current_turn == 'A' else 'A'
         self.waiting_for_stop = False

@@ -20,7 +20,7 @@ Experience a classic game of pocket soccer (futebol de botão) enhanced by moder
 1. **Clone the repository**:
    ```bash
    git clone [repository-url]
-   cd CVBotao
+   cd CVButtonGame
    ```
 
 2. **Create and activate a Virtual Environment**:
@@ -70,5 +70,5 @@ Open `config.py` to customize your experience:
 
 ## 🎨 Credits
 **Developed by**: Renato Gritti
-**Version**: 1.3
+**Version**: 2.0.1
 **Engine**: Pygame + OpenCV + MediaPipe

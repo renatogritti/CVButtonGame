@@ -51,6 +51,7 @@ def main():
     team_a, team_b = setup_teams()
     ball = Ball(WIDTH // 2, HEIGHT // 2)
     all_players = team_a + team_b
+    show_pip = True
 
     while True:
         frame = cv_handler.get_frame()
@@ -64,10 +65,16 @@ def main():
                 cv_handler.close()
                 pygame.quit()
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    cv_handler.close()
+                    pygame.quit()
+                    sys.exit()
+                elif event.key == pygame.K_n:
+                    game_manager.hard_reset(team_a, team_b, ball)
+                elif event.key == pygame.K_p:
+                    show_pip = not show_pip
 
-        # 1. Logic & Input
-        all_stopped = all(p.vel.length() < STATIONARY_THRESHOLD for p in all_players) and ball.vel.length() < STATIONARY_THRESHOLD
-        
         # 1. Logic & Input
         all_stopped = all(p.vel.length() < STATIONARY_THRESHOLD for p in all_players) and ball.vel.length() < STATIONARY_THRESHOLD
         
@@ -119,7 +126,8 @@ def main():
         can_play = all_stopped and not game_manager.waiting_for_stop and game_manager.goal_timer == 0 and not game_manager.winner
         renderer.draw_ui_cursor(finger_pos, is_pinching, can_play, aim_data is not None)
 
-        renderer.draw_pip(frame)
+        if show_pip:
+            renderer.draw_pip(frame)
         pygame.display.flip()
         clock.tick(FPS)
 
